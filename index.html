@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Мир Регби</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+			rel="stylesheet"
+		/>
+		<script
+			src="https://api-maps.yandex.ru/2.1/?apikey=ff031053-dbd5-49cd-8f95-887b073839fb&lang=ru_RU"
+			type="text/javascript"
+		></script>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						animation: {
+							'fade-in': 'fadeIn 1s ease-in-out',
+							'fade-in-up': 'fadeInUp 0.8s ease-out',
+							'fade-in-down': 'fadeInDown 0.8s ease-out',
+							float: 'float 6s ease-in-out infinite',
+							'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+						},
+						keyframes: {
+							fadeIn: {
+								'0%': { opacity: '0' },
+								'100%': { opacity: '1' },
+							},
+							fadeInUp: {
+								'0%': { opacity: '0', transform: 'translateY(20px)' },
+								'100%': { opacity: '1', transform: 'translateY(0)' },
+							},
+							fadeInDown: {
+								'0%': { opacity: '0', transform: 'translateY(-20px)' },
+								'100%': { opacity: '1', transform: 'translateY(0)' },
+							},
+							float: {
+								'0%, 100%': { transform: 'translateY(0)' },
+								'50%': { transform: 'translateY(-10px)' },
+							},
+						},
+					},
+				},
+			}
+		</script>
+		<style>
+			html {
+				scroll-behavior: smooth;
+			}
+
+			.hero-gradient {
+				background: linear-gradient(
+					135deg,
+					rgba(22, 163, 74, 0.307) 0%,
+					rgb(223, 222, 222) 100%
+				);
+			}
+
+			.card-hover {
+				transition: all 0.3s ease;
+			}
+
+			.card-hover:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+					0 10px 10px -5px rgba(0, 0, 0, 0.04);
+			}
+
+			.btn-hover {
+				transition: all 0.3s ease;
+			}
+
+			.btn-hover:hover {
+				transform: translateY(-3px);
+				box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+			}
+
+			.nav-link {
+				position: relative;
+			}
+
+			.nav-link::after {
+				content: '';
+				position: absolute;
+				width: 0;
+				height: 2px;
+				bottom: -2px;
+				left: 0;
+				background-color: #f0fdf4;
+				transition: width 0.3s ease;
+			}
+
+			.nav-link:hover::after {
+				width: 100%;
+			}
+
+			.ripple {
+				position: relative;
+				overflow: hidden;
+			}
+
+			.ripple-effect {
+				position: absolute;
+				border-radius: 50%;
+				background-color: rgba(255, 255, 255, 0.7);
+				transform: scale(0);
+				animation: ripple 0.6s linear;
+				pointer-events: none;
+			}
+
+			@keyframes ripple {
+				to {
+					transform: scale(4);
+					opacity: 0;
+				}
+			}
+		</style>
+	</head>
+	<body class="font-sans bg-white">
+		<!-- Навигация -->
+		<nav
+			class="bg-green-600 text-white shadow-lg sticky top-0 z-50 animate-fade-in-down"
+		>
+			<div
+				class="container mx-auto px-4 py-3 flex justify-between items-center"
+			>
+				<div class="flex items-center gap-3">
+					<div class="logo-placeholder">
+						<img
+							src="public/logo.png"
+							alt="Logo"
+							class="h-20 transition-transform duration-300 hover:scale-105"
+						/>
+					</div>
+					<a
+						href="#hero"
+						onclick="smoothScroll(event, 'hero')"
+						class="font-bold text-3xl hover:text-green-200 transition duration-300 cursor-pointer"
+					>
+						Мир Регби
+					</a>
+				</div>
+				<div class="hidden md:flex space-x-8">
+					<a
+						href="#about"
+						class="nav-link hover:text-green-200 transition text-2xl duration-300"
+						data-scroll
+					>
+						О нас
+					</a>
+					<a
+						href="#products"
+						class="nav-link hover:text-green-200 transition text-2xl duration-300"
+						data-scroll
+					>
+						Товары
+					</a>
+					<a
+						href="#stores"
+						class="nav-link hover:text-green-200 transition text-2xl duration-300"
+						data-scroll
+					>
+						Магазины
+					</a>
+					<a
+						href="#contacts"
+						class="nav-link hover:text-green-200 transition text-2xl duration-300"
+						data-scroll
+					>
+						Контакты
+					</a>
+				</div>
+				<button class="md:hidden text-white focus:outline-none">
+					<svg
+						class="w-6 h-6"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 6h16M4 12h16M4 18h16"
+						></path>
+					</svg>
+				</button>
+			</div>
+		</nav>
+
+		<!-- Герой-секция -->
+		<section id="hero" class="hero-gradient py-20 md:py-32 animate-fade-in">
+			<div class="container mx-auto px-4 text-center">
+				<h1
+					class="text-6xl md:text-7xl font-bold text-green-700 mb-6 animate-fade-in-up"
+				>
+					Мир Регби
+				</h1>
+				<p
+					class="text-xl md:text-2xl text-gray-700 mb-8 animate-fade-in-up animation-delay-100"
+				>
+					Ваш надежный партнер в мире спортивных товаров
+				</p>
+				<div
+					class="flex flex-col md:flex-row justify-center gap-4 animate-fade-in-up animation-delay-200"
+				>
+					<!-- Основная кнопка -->
+					<a
+						href="#products"
+						onclick="smoothScroll(event, 'products')"
+						class="ripple bg-green-600 text-lg hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 cursor-pointer btn-hover"
+					>
+						Каталог товаров
+					</a>
+
+					<!-- Вторичная кнопка -->
+					<a
+						href="#stores"
+						onclick="smoothScroll(event, 'stores')"
+						class="ripple bg-white hover:bg-gray-100 text-lg text-green-600 font-bold py-3 px-6 rounded-lg border-2 border-green-600 transition duration-300 hover:text-green-700 hover:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 cursor-pointer btn-hover"
+					>
+						Наши магазины
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- О компании -->
+		<section id="about" class="py-16 md:py-24 bg-gray-50">
+			<div class="container mx-auto px-4">
+				<h2
+					class="text-3xl md:text-4xl font-bold text-green-700 mb-8 text-center animate-fade-in-up"
+				>
+					О компании
+				</h2>
+				<div class="flex flex-col md:flex-row items-center gap-8">
+					<div class="md:w-1/2 animate-fade-in-left">
+						<img
+							src="public/mid.jpeg"
+							alt="Магазин Мир Регби"
+							class="rounded-lg shadow-lg w-full hover:scale-105 transition-transform duration-500"
+						/>
+					</div>
+					<div class="md:w-1/2 animate-fade-in-right">
+						<h3 class="text-2xl font-bold text-gray-800 mb-4">Наша история</h3>
+						<p class="text-gray-600 mb-4 text-xl">
+							Сеть магазинов «Мир Регби» была основана в 2012 году с целью
+							предоставления качественных спортивных товаров для любителей и
+							профессионалов.
+						</p>
+						<p class="text-gray-600 mb-6 text-xl">
+							Сегодня мы представлены в Красноярске и Краснодаре, а также на
+							ведущих маркетплейсах, предлагая широкий ассортимент товаров для
+							более чем 10 видов спорта.
+						</p>
+						<h3 class="text-2xl font-bold text-gray-800 mb-4">
+							Наши преимущества
+						</h3>
+						<ul class="space-y-2 text-green-600 text-xl font-bold">
+							<li
+								class="flex items-start animate-fade-in-right animation-delay-100"
+							>
+								<svg
+									class="w-5 h-5 text-green-600 mr-2 mt-1 animate-pulse-slow"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 13l4 4L19 7"
+									></path>
+								</svg>
+								Широкий ассортимент товаров для различных видов спорта
+							</li>
+							<li
+								class="flex items-start animate-fade-in-right animation-delay-200"
+							>
+								<svg
+									class="w-5 h-5 text-green-600 mr-2 mt-1 animate-pulse-slow"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 13l4 4L19 7"
+									></path>
+								</svg>
+								Качественная продукция от проверенных производителей
+							</li>
+							<li
+								class="flex items-start animate-fade-in-right animation-delay-300"
+							>
+								<svg
+									class="w-5 h-5 text-green-600 mr-2 mt-1 animate-pulse-slow"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 13l4 4L19 7"
+									></path>
+								</svg>
+								Удобные способы покупки: офлайн и онлайн
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- Секция статистики (добавь после секции "О компании") -->
+		<section class="py-16 bg-green-600 text-white">
+			<div class="container mx-auto px-4">
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+					<div class="animate-fade-in-up">
+						<div
+							class="text-5xl md:text-6xl font-bold mb-2 counter"
+							data-target="13"
+						>
+							0
+						</div>
+						<div class="text-xl">Лет на рынке</div>
+					</div>
+					<div class="animate-fade-in-up animation-delay-100">
+						<div
+							class="text-5xl md:text-6xl font-bold mb-2 counter"
+							data-target="2000"
+						>
+							0
+						</div>
+						<div class="text-xl">Товаров в ассортименте</div>
+					</div>
+					<div class="animate-fade-in-up animation-delay-200">
+						<div
+							class="text-5xl md:text-6xl font-bold mb-2 counter"
+							data-target="50000"
+						>
+							0
+						</div>
+						<div class="text-xl">Довольных клиентов</div>
+					</div>
+					<div class="animate-fade-in-up animation-delay-300">
+						<div
+							class="text-5xl md:text-6xl font-bold mb-2 counter"
+							data-target="2"
+						>
+							0
+						</div>
+						<div class="text-xl">Города присутствия</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Категории товаров -->
+		<section id="products" class="py-16 md:py-24 bg-white">
+			<div class="container mx-auto px-4">
+				<h2
+					class="text-3xl md:text-4xl font-bold text-green-700 mb-12 text-center animate-fade-in-up"
+				>
+					Категории товаров
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div
+						class="bg-gray-50 rounded-lg overflow-hidden shadow-md transition duration-300 card-hover animate-fade-in-up animation-delay-100"
+					>
+						<img
+							src="public/rugby.jpg"
+							alt="Регби"
+							class="w-full h-100 object-cover aspect-w-1 aspect-h-1 hover:scale-105 transition-transform duration-500"
+						/>
+						<div class="p-6">
+							<h3 class="text-3xl font-bold text-gray-800 mb-2">Регби</h3>
+							<p class="text-gray-600 mb-4 text-xl">
+								Экипировка и аксессуары для игры в регби: мячи, бутсы, защита и
+								многое другое
+							</p>
+							<div class="flex flex-wrap gap-2">
+								<a
+									href="https://www.ozon.ru/seller/mir-regbi-279124/products/?miniapp=seller_279124"
+									target="_blank"
+									class="ripple bg-blue-700 text-white hover:bg-blue-600 px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Ozon
+								</a>
+								<a
+									href="https://market.yandex.ru/cc/6wpi6F"
+									target="_blank"
+									class="ripple bg-yellow-400 hover:bg-yellow-300 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Яндекс.Маркет
+								</a>
+								<a
+									href="https://www.wildberries.ru/seller/885475"
+									target="_blank"
+									class="ripple bg-pink-800 hover:bg-pink-700 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Wildberries
+								</a>
+								<a
+									href="https://www.avito.ru/brands/i14892852/all?page_from=from_item_card&iid=3985987729&sellerId=e316f867a3f57117226358f944dd8b2b"
+									target="_blank"
+									class="ripple bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Авито
+								</a>
+							</div>
+						</div>
+					</div>
+					<div
+						class="bg-gray-50 rounded-lg overflow-hidden shadow-md transition duration-300 card-hover animate-fade-in-up animation-delay-200"
+					>
+						<img
+							src="public/football.webp"
+							alt="Футбол"
+							class="w-full h-100 object-cover aspect-w-1 aspect-h-1 hover:scale-105 transition-transform duration-500"
+						/>
+						<div class="p-6">
+							<h3 class="text-3xl font-bold text-gray-800 mb-2">Футбол</h3>
+							<p class="text-gray-600 mb-4 text-xl">
+								Футбольная экипировка: мячи, бутсы, форма, щитки и аксессуары
+							</p>
+							<div class="flex flex-wrap gap-2">
+								<a
+									href="https://www.ozon.ru/seller/mir-regbi-279124/products/?miniapp=seller_279124"
+									target="_blank"
+									class="ripple bg-blue-700 text-white hover:bg-blue-600 px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Ozon
+								</a>
+								<a
+									href="https://market.yandex.ru/cc/6wpi6F"
+									target="_blank"
+									class="ripple bg-yellow-400 hover:bg-yellow-300 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Яндекс.Маркет
+								</a>
+								<a
+									href="https://www.wildberries.ru/seller/885475"
+									target="_blank"
+									class="ripple bg-pink-800 hover:bg-pink-700 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Wildberries
+								</a>
+								<a
+									href="https://www.avito.ru/brands/i14892852/all?page_from=from_item_card&iid=3985987729&sellerId=e316f867a3f57117226358f944dd8b2b"
+									target="_blank"
+									class="ripple bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Авито
+								</a>
+							</div>
+						</div>
+					</div>
+					<div
+						class="bg-gray-50 rounded-lg overflow-hidden shadow-md transition duration-300 card-hover animate-fade-in-up animation-delay-300"
+					>
+						<img
+							src="public/basketball.jpg"
+							alt="Баскетбол"
+							class="w-full h-100 object-cover aspect-w-1 aspect-h-1 hover:scale-105 transition-transform duration-500"
+						/>
+						<div class="p-6">
+							<h3 class="text-3xl font-bold text-gray-800 mb-2">Баскетбол</h3>
+							<p class="text-gray-600 mb-4 text-xl">
+								Баскетбольные мячи, кольца, форма и аксессуары для игры
+							</p>
+							<div class="flex flex-wrap gap-2">
+								<a
+									href="https://www.ozon.ru/seller/mir-regbi-279124/products/?miniapp=seller_279124"
+									target="_blank"
+									class="ripple bg-blue-700 text-white hover:bg-blue-600 px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Ozon
+								</a>
+								<a
+									href="https://market.yandex.ru/cc/6wpi6F"
+									target="_blank"
+									class="ripple bg-yellow-400 hover:bg-yellow-300 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Яндекс.Маркет
+								</a>
+								<a
+									href="https://www.wildberries.ru/seller/885475"
+									target="_blank"
+									class="ripple bg-pink-800 hover:bg-pink-700 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Wildberries
+								</a>
+								<a
+									href="https://www.avito.ru/brands/i14892852/all?page_from=from_item_card&iid=3985987729&sellerId=e316f867a3f57117226358f944dd8b2b"
+									target="_blank"
+									class="ripple bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded text-sm transition btn-hover"
+								>
+									Авито
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Наши магазины -->
+		<section id="stores" class="py-16 bg-gray-50">
+			<div class="container mx-auto px-4">
+				<h2
+					class="text-3xl md:text-4xl font-bold text-green-700 mb-12 text-center animate-fade-in-up"
+				>
+					Наши магазины
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in-up">
+					<div
+						class="bg-white rounded-lg shadow-md p-6 text-xl hover:shadow-lg transition duration-300"
+					>
+						<h3 class="text-3xl font-bold text-gray-800 mb-3">Красноярск</h3>
+						<p class="text-gray-600 mb-2">
+							<span class="font-semibold">Адрес:</span> ул. Мирошниченко, 6
+						</p>
+						<p class="text-gray-600 mb-2">
+							<span class="font-semibold">Телефон:</span> +7 (913) 534-222-21
+						</p>
+						<p class="text-gray-600 mb-4">
+							<span class="font-semibold">Режим работы:</span> Ежедневно:
+							10:00-19:00
+						</p>
+					</div>
+					<div
+						class="bg-white rounded-lg shadow-md p-6 text-xl hover:shadow-lg transition duration-300"
+					>
+						<h3 class="text-3xl font-bold text-gray-800 mb-3">Краснодар</h3>
+						<p class="text-gray-600 mb-2">
+							<span class="font-semibold">Адрес:</span> ул. Командорская, 5/1
+						</p>
+						<p class="text-gray-600 mb-2">
+							<span class="font-semibold">Телефон:</span> +7 (918) 134-84-37
+						</p>
+						<p class="text-gray-600 mb-4">
+							<span class="font-semibold">Режим работы:</span> Ежедневно:
+							9:00-20:00
+						</p>
+					</div>
+				</div>
+				<div
+					class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in-up animation-delay-100"
+				>
+					<div
+						class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-300"
+					>
+						<div id="map-krasnoyarsk" style="width: 100%; height: 400px"></div>
+					</div>
+					<div
+						class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-300"
+					>
+						<div id="map-krasnodar" style="width: 100%; height: 400px"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Контакты -->
+		<section id="contacts" class="py-16 md:py-24 bg-white">
+			<div class="container mx-auto px-4">
+				<h2
+					class="text-3xl md:text-4xl font-bold text-green-700 mb-12 text-center animate-fade-in-up"
+				>
+					Контакты
+				</h2>
+				<div class="flex flex-col md:flex-row gap-8">
+					<div class="md:w-1/2 animate-fade-in-left">
+						<div
+							class="bg-gray-50 rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300"
+						>
+							<h3 class="text-3xl font-bold text-gray-800 mb-4">
+								Свяжитесь с нами
+							</h3>
+							<div class="mb-6 text-xl">
+								<h4 class="font-semibold text-gray-700 mb-2">
+									Мы в социальных сетях:
+								</h4>
+								<div class="flex space-x-4">
+									<a
+										href="https://vk.com/clubmirrugby?from=groups"
+										target="_blank"
+										class="text-blue-800 w-10 h-10 rounded-full flex items-center justify-center transition btn-hover hover:bg-blue-100"
+									>
+										<svg
+											class="w-25 h-25"
+											fill="currentColor"
+											viewBox="0 0 24 24"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												d="M15.073 2H8.938C3.332 2 2 3.333 2 8.927v6.136C2 20.667 3.323 22 8.927 22h6.136C20.667 22 22 20.677 22 15.073V8.938C22 3.332 20.677 2 15.073 2zm3.073 14.27h-1.459c-.552 0-.718-.447-1.708-1.437-.854-.834-1.238-.937-1.468-.937-.302 0-.385.083-.385.5v1.312c0 .354-.115.563-1.042.563-1.52 0-3.062-.531-4.208-1.438-2.073-1.708-2.583-4.813-2.583-5.604 0-.26.083-.49.5-.49h1.459c.375 0 .51.167.656.552.708 2.084 1.916 3.854 2.406 3.854.188 0 .27-.083.27-.552v-2.146c-.062-.98-.582-1.062-.582-1.416 0-.167.167-.27.333-.27h2.292c.313 0 .417.156.417.531v2.896c0 .313.135.417.229.417.188 0 .333-.104.677-.448 1.188-1.271 1.854-3.229 1.854-3.229.104-.26.271-.5.656-.5h1.459c.438 0 .542.229.438.531-.208 1.145-2.583 3.729-2.583 3.729-.167.208-.24.313 0 .531.125.188.552.552.896 1.27 1.271 2.188 2.354 2.479 3.104.229.604-.125.917-.667.917z"
+											></path>
+										</svg>
+									</a>
+								</div>
+							</div>
+							<form
+								action="https://formspree.io/f/xkgbzyow"
+								method="POST"
+								class="space-y-4 text-xl"
+								id="contactForm"
+							>
+								<div>
+									<label
+										for="name"
+										class="block text-gray-700 font-medium mb-1"
+									>
+										Ваше имя <span class="text-red-500">*</span>
+									</label>
+									<input
+										type="text"
+										id="name"
+										name="name"
+										class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-300"
+										required
+									/>
+									<p id="nameError" class="text-red-500 text-sm mt-1 hidden">
+										Пожалуйста, введите ваше имя
+									</p>
+								</div>
+								<div>
+									<label
+										for="email"
+										class="block text-gray-700 font-medium mb-1"
+									>
+										Email <span class="text-red-500">*</span>
+									</label>
+									<input
+										type="email"
+										id="email"
+										name="email"
+										class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-300"
+										required
+									/>
+									<p id="emailError" class="text-red-500 text-sm mt-1 hidden">
+										Пожалуйста, введите корректный email
+									</p>
+								</div>
+								<div>
+									<label
+										for="message"
+										class="block text-gray-700 font-medium mb-1"
+									>
+										Сообщение
+									</label>
+									<textarea
+										id="message"
+										name="message"
+										rows="4"
+										class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-300 resize-none"
+										required
+									></textarea>
+									<p id="messageError" class="text-red-500 text-sm mt-1 hidden">
+										Пожалуйста, введите ваше сообщение
+									</p>
+								</div>
+								<button
+									type="submit"
+									class="ripple bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 btn-hover"
+									id="submitBtn"
+								>
+									Отправить
+								</button>
+							</form>
+						</div>
+					</div>
+					<div class="md:w-1/2 animate-fade-in-right">
+						<div
+							class="bg-gray-50 rounded-lg p-6 shadow-md h-full hover:shadow-lg transition duration-300 text-xl"
+						>
+							<h3 class="text-3xl font-bold text-gray-800 mb-4">
+								Обратная связь
+							</h3>
+							<p class="text-gray-600 mb-4">
+								Мы всегда рады ответить на ваши вопросы и принять предложения по
+								улучшению нашего сервиса.
+							</p>
+							<p class="text-gray-600 mb-4">
+								Вы можете связаться с нами по телефону, через социальные сети
+								или заполнив форму обратной связи.
+							</p>
+							<div class="space-y-2">
+								<div class="flex items-start">
+									<svg
+										class="w-5 h-5 text-green-600 mr-2 mt-1 animate-pulse-slow"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+										></path>
+									</svg>
+									<span class="text-gray-700">+7 (931) 534-22-21</span>
+								</div>
+								<div class="flex items-start">
+									<svg
+										class="w-5 h-5 text-green-600 mr-2 mt-1 animate-pulse-slow"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+										></path>
+									</svg>
+									<span class="text-gray-700">mirregby-market@yandex.ru</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Футер -->
+		<footer class="bg-green-700 text-white py-8 animate-fade-in-up">
+			<div class="container mx-auto px-4">
+				<div class="flex flex-col md:flex-row justify-between items-center">
+					<div class="flex items-center mb-4 md:mb-0">
+						<img
+							src="public/logo.png"
+							alt="Logo"
+							class="h-20 transition-transform duration-300 hover:scale-105"
+						/>
+						<span class="font-bold text-3xl ml-3">Мир Регби</span>
+					</div>
+					<div class="text-center md:text-right text-xl">
+						<p class="mb-2">© 2025 Мир Регби. Все права защищены.</p>
+						<p>Сеть магазинов спортивных товаров</p>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<button
+			id="backToTop"
+			class="fixed bottom-8 right-8 bg-green-600 text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-green-700 focus:outline-none"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-6 w-6"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M5 10l7-7m0 0l7 7m-7-7v18"
+				/>
+			</svg>
+		</button>
+
+		<script>
+			// Кнопка "Наверх"
+			const backToTopButton = document.getElementById('backToTop')
+
+			window.addEventListener('scroll', () => {
+				if (window.pageYOffset > 300) {
+					backToTopButton.classList.remove('opacity-0', 'invisible')
+					backToTopButton.classList.add('opacity-100', 'visible')
+				} else {
+					backToTopButton.classList.remove('opacity-100', 'visible')
+					backToTopButton.classList.add('opacity-0', 'invisible')
+				}
+			})
+
+			backToTopButton.addEventListener('click', () => {
+				window.scrollTo({
+					top: 0,
+					behavior: 'smooth',
+				})
+			})
+
+			// Анимированный счетчик
+			const counters = document.querySelectorAll('.counter')
+			const speed = 2000
+
+			function animateCounters() {
+				counters.forEach(counter => {
+					const target = +counter.getAttribute('data-target')
+					const count = +counter.innerText
+					const increment = target / speed
+
+					if (count < target) {
+						counter.innerText = Math.ceil(count + increment)
+						setTimeout(animateCounters, 1)
+					} else {
+						counter.innerText = target
+					}
+				})
+			}
+
+			// Запускаем счетчики при прокрутке до них
+			const statsSection = document.querySelector('section.bg-green-600')
+			const observer = new IntersectionObserver(
+				entries => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							animateCounters()
+							observer.unobserve(entry.target)
+						}
+					})
+				},
+				{ threshold: 0.5 }
+			)
+
+			observer.observe(statsSection)
+
+			// Карусель отзывов
+			let currentSlide = 0
+			const slides = document.querySelectorAll('.carousel-slide')
+			const track = document.querySelector('.carousel-track')
+			const prevBtn = document.querySelector('.carousel-prev')
+			const nextBtn = document.querySelector('.carousel-next')
+
+			function updateCarousel() {
+				track.style.transform = `translateX(-${currentSlide * 100}%)`
+			}
+
+			nextBtn.addEventListener('click', () => {
+				currentSlide = (currentSlide + 1) % slides.length
+				updateCarousel()
+			})
+
+			prevBtn.addEventListener('click', () => {
+				currentSlide = (currentSlide - 1 + slides.length) % slides.length
+				updateCarousel()
+			})
+
+			// Автопрокрутка карусели
+			setInterval(() => {
+				currentSlide = (currentSlide + 1) % slides.length
+				updateCarousel()
+			}, 5000)
+
+			// Параллакс эффект
+			window.addEventListener('scroll', function () {
+				const hero = document.querySelector('.hero-gradient')
+				const scrollPosition = window.pageYOffset
+				hero.style.backgroundPositionY = scrollPosition * 0.5 + 'px'
+			})
+		</script>
+
+		<script>
+			document
+				.getElementById('contactForm')
+				.addEventListener('submit', function (event) {
+					event.preventDefault() // Предотвращаем стандартную отправку формы
+
+					let isValid = true
+					const form = this
+
+					// Проверка поля "Имя"
+					const nameField = document.getElementById('name')
+					const nameError = document.getElementById('nameError')
+					if (nameField.value.trim() === '') {
+						nameField.classList.add('border-red-500')
+						nameError.classList.remove('hidden')
+						isValid = false
+					} else {
+						nameField.classList.remove('border-red-500')
+						nameError.classList.add('hidden')
+					}
+
+					// Проверка поля "Email"
+					const emailField = document.getElementById('email')
+					const emailError = document.getElementById('emailError')
+					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+					if (
+						emailField.value.trim() === '' ||
+						!emailRegex.test(emailField.value)
+					) {
+						emailField.classList.add('border-red-500')
+						emailError.classList.remove('hidden')
+						isValid = false
+					} else {
+						emailField.classList.remove('border-red-500')
+						emailError.classList.add('hidden')
+					}
+
+					// Проверка поля "Сообщение"
+					const messageField = document.getElementById('message')
+					const messageError = document.getElementById('messageError')
+					if (messageField.value.trim() === '') {
+						messageField.classList.add('border-red-500')
+						messageError.classList.remove('hidden')
+						isValid = false
+					} else {
+						messageField.classList.remove('border-red-500')
+						messageError.classList.add('hidden')
+					}
+
+					// Если форма валидна, отправляем данные
+					if (isValid) {
+						const submitBtn = document.getElementById('submitBtn')
+						submitBtn.disabled = true
+						submitBtn.textContent = 'Отправка...'
+
+						fetch(form.action, {
+							method: 'POST',
+							body: new FormData(form),
+							headers: {
+								Accept: 'application/json',
+							},
+						})
+							.then(response => {
+								if (response.ok) {
+									alert('Сообщение успешно отправлено!')
+									form.reset()
+								} else {
+									throw new Error('Ошибка отправки формы')
+								}
+							})
+							.catch(error => {
+								alert(
+									'Произошла ошибка при отправке формы. Пожалуйста, попробуйте позже.'
+								)
+								console.error('Error:', error)
+							})
+							.finally(() => {
+								submitBtn.disabled = false
+								submitBtn.textContent = 'Отправить'
+							})
+					}
+				})
+
+			// Динамическая проверка при вводе
+			document.getElementById('name').addEventListener('input', function () {
+				if (this.value.trim() !== '') {
+					this.classList.remove('border-red-500')
+					document.getElementById('nameError').classList.add('hidden')
+				}
+			})
+
+			document.getElementById('email').addEventListener('input', function () {
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+				if (this.value.trim() !== '' && emailRegex.test(this.value)) {
+					this.classList.remove('border-red-500')
+					document.getElementById('emailError').classList.add('hidden')
+				}
+			})
+
+			document.getElementById('message').addEventListener('input', function () {
+				if (this.value.trim() !== '') {
+					this.classList.remove('border-red-500')
+					document.getElementById('messageError').classList.add('hidden')
+				}
+			})
+		</script>
+
+		<script>
+			// Улучшенная функция для плавной прокрутки
+			function smoothScroll(event, targetId) {
+				event.preventDefault()
+				const targetElement = document.getElementById(targetId)
+				if (targetElement) {
+					// Для герой-секции не учитываем offset (прокручиваем до самого верха)
+					const offset = targetId === 'hero' ? 0 : 100
+					const targetPosition =
+						targetElement.getBoundingClientRect().top +
+						window.pageYOffset -
+						offset
+
+					window.scrollTo({
+						top: targetPosition,
+						behavior: 'smooth',
+					})
+
+					// Обновляем URL
+					history.pushState(null, null, `#${targetId}`)
+				}
+			}
+
+			// Обработчик для всех внутренних ссылок
+			document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+				anchor.addEventListener('click', function (e) {
+					const href = this.getAttribute('href')
+					if (href !== '#') {
+						smoothScroll(e, href.substring(1))
+					}
+				})
+			})
+		</script>
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				const links = document.querySelectorAll('nav a')
+
+				links.forEach(link => {
+					link.addEventListener('click', function (e) {
+						e.preventDefault()
+						const targetId = this.getAttribute('href').slice(1)
+						const targetElement = document.getElementById(targetId)
+
+						if (targetElement) {
+							const yOffset = -100 // Смещение от верхнего края страницы
+							const y =
+								targetElement.getBoundingClientRect().top +
+								window.pageYOffset +
+								yOffset
+
+							window.scrollTo({
+								top: y,
+								behavior: 'smooth',
+							})
+						}
+					})
+				})
+			})
+		</script>
+
+		<script>
+			ymaps.ready(function () {
+				var myMapKrasnoyarsk = new ymaps.Map('map-krasnoyarsk', {
+						center: [56.029748, 92.756128], // Координаты Красноярска
+						zoom: 17,
+					}),
+					myMapKrasnodar = new ymaps.Map('map-krasnodar', {
+						center: [45.091838, 39.032033], // Координаты Краснодара
+						zoom: 17,
+					})
+
+				// Создаем метку для Красноярска
+				var myPlacemarkKrasnoyarsk = new ymaps.Placemark(
+					[56.029748, 92.756128], // Координаты метки
+					{
+						hintContent: 'Мир Регби, ул. Мирошниченко, 6',
+						balloonContent: 'Мир Регби, ул. Мирошниченко, 6',
+					},
+					{
+						iconLayout: 'default#image',
+						iconImageHref: 'public/marker.png', // Ссылка на изображение метки
+						iconImageSize: [30, 42],
+						iconImageOffset: [-3, -42],
+					}
+				)
+
+				// Создаем метку для Краснодара
+				var myPlacemarkKrasnodar = new ymaps.Placemark(
+					[45.091838, 39.032033], // Координаты метки
+					{
+						hintContent: 'Мир Регби, ул. Командорская, 5/1',
+						balloonContent: 'Мир Регби, ул. Командорская, 5/1',
+					},
+					{
+						iconLayout: 'default#image',
+						iconImageHref: 'public/marker.png', // Ссылка на изображение метки
+						iconImageSize: [30, 42],
+						iconImageOffset: [-3, -42],
+					}
+				)
+
+				// Добавляем метки на карты
+				myMapKrasnoyarsk.geoObjects.add(myPlacemarkKrasnoyarsk)
+				myMapKrasnodar.geoObjects.add(myPlacemarkKrasnodar)
+			})
+		</script>
+	</body>
+</html>
